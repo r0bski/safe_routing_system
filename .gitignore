@@ -1,0 +1,56 @@
+# Python-related files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Django-related files
+db.sqlite3
+*.sqlite3
+*.log
+
+# Virtual environment
+env/
+venv/
+
+# Environment variables
+.env
+*.env
+
+# Static files
+staticfiles/
+static/
+
+# Media files (if not stored elsewhere)
+media/
+
+# IDE files
+.vscode/
+.idea/
+
+# Tests and coverage reports
+htmlcov/
+*.cover
+.coverage
+.cache
+.nosetests.xml
+coverage.xml
+
+# MacOS-specific files
+.DS_Store
+*.DS_Store
+
+# Windows-specific files
+Thumbs.db
+
+# Other temporary files
+*.tmp
+*.swp
+*.swo
+
+# Compiled files
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
