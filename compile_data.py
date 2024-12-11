@@ -29,4 +29,3 @@ df.write_parquet("police_data/compiled_data.parquet")
 df = pl.read_parquet("police_data/compiled_data.parquet")
 print(df)
 
-# git lfs track "*.parquet"
