@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from maps.views import map_view
+from maps.views import get_route
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', map_view, name='map_view'),  # Set the root URL to show the map
+    path('get-route/', get_route, name='get_route'),
 ]
