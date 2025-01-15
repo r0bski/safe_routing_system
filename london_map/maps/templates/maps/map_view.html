@@ -1,94 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <title>Full-Screen Map with Floating Form</title>
-  <!-- Leaflet CSS -->
-  <link 
-    rel="stylesheet" 
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-  <style>
-    /* Ensure the html and body take up the full viewport height */
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
+{% extends 'maps/base.html' %}
+{% load static %}
 
-    /* Make the map fill all remaining space */
-    #map {
-      width: 100%;
-      height: 100%;
-      position: absolute; /* or fixed if you prefer */
-      top: 0;
-      left: 0;
-    }
+{% block content %}
+<!-- The map fills the entire background -->
+<div id="map"></div>
 
-    /* The floating box */
-    .floating-box {
-      position: absolute; /* or fixed */
-      top: 10px;
-      left: 10px;
-      z-index: 9999;
-      background-color: rgba(255, 255, 255, 0.9); 
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      max-width: 300px; /* optional max-width for the box */
-    }
+<!-- Floating box for header and form -->
+<div class="floating-box">
+  <h1>Find a Safe Route</h1>
+  <form action="{% url 'get_route' %}" method="POST">
+    {% csrf_token %}
+    <label for="start">Start Location:</label>
+    <input type="text" id="start" name="start" required />
 
-    /* Basic styling for form elements */
-    .floating-box h1 {
-      margin-top: 0;
-    }
-    .floating-box label {
-      display: block;
-      margin: 0.5rem 0 0.25rem;
-    }
-    .floating-box input[type="text"] {
-      width: 100%;
-      margin-bottom: 0.5rem;
-      box-sizing: border-box;
-      padding: 0.5rem;
-    }
-    .floating-box button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-    }
-  </style>
-</head>
-<body>
+    <label for="destination">Destination:</label>
+    <input type="text" id="destination" name="destination" required />
 
-  <!-- The map fills the entire background -->
-  <div id="map"></div>
+    <button type="submit">Get Safe Route</button>
+  </form>
+</div>
 
-  <!-- Floating box for header and form -->
-  <div class="floating-box">
-    <h1>Find a Safe Route</h1>
-    <form action="{% url 'get_route' %}" method="POST">
-      {% csrf_token %}
-      <label for="start">Start Location:</label>
-      <input type="text" id="start" name="start" required/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Initialize the map
+  var map = L.map('map').setView([51.5074, -0.1278], 13);
 
-      <label for="destination">Destination:</label>
-      <input type="text" id="destination" name="destination" required/>
-
-      <button type="submit">Get Safe Route</button>
-    </form>
-  </div>
-
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    // Initialize the map
-    var map = L.map('map').setView([51.5074, -0.1278], 13);
-
-    // Add OSM tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-  </script>
-</body>
-</html>
+  // Add OSM tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+</script>
+{% endblock content %}

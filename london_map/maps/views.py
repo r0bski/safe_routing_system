@@ -3,6 +3,9 @@ from django.shortcuts import render
 def map_view(request):
     return render(request, 'maps/map_view.html')
 
+def about_view(request):
+    return render(request, 'maps/about.html')
+
 def get_route(request):
     if request.method == 'POST':
         start = request.POST.get('start')
