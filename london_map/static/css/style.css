@@ -1,0 +1,92 @@
+/* static/css/style.css */
+
+/* Navigation Bar Styling */
+.navbar {
+    background-color: #333; /* Dark background color */
+    color: white;
+    padding: 10px 20px;
+    position: sticky; /* Sticks to the top when scrolling */
+    top: 0;
+    z-index: 1000; /* Ensure it's above other elements */
+    width: 100%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    
+  }
+  
+  .navbar-list {
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    list-style-type: none; /* Remove default bullet points */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-list li {
+    margin-right: 20px; /* Space between links */
+  }
+  
+  .navbar-list li a {
+    text-decoration: none; /* Remove underline from links */
+    color: white; /* Link text color */
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-list li a:hover {
+    color: #FFD700; /* Gold color on hover */
+  }
+  
+  .content {
+    padding: 20px; /* Space between content and the top */
+  }
+  
+
+/* map_view css */
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Make the map fill all remaining space */
+  #map {
+    width: 100%;
+    height: 96%;
+    position: absolute; /* or fixed if you prefer */
+    bottom: 0;
+    left: 0;
+  }
+
+  /* The floating box */
+  .floating-box {
+    position: absolute; /* or fixed */
+    top: 40px;
+    left: 47px;
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.9); 
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    max-width: 300px; /* optional max-width for the box */
+  }
+
+  /* Basic styling for form elements */
+  .floating-box h1 {
+    margin-top: 0;
+  }
+  .floating-box label {
+    display: block;
+    margin: 0.5rem 0 0.25rem;
+  }
+  .floating-box input[type="text"] {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+    padding: 0.5rem;
+  }
+  .floating-box button {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+  }

@@ -19,7 +19,7 @@ venv/
 
 # Static files
 staticfiles/
-static/
+#static/
 
 # Media files (if not stored elsewhere)
 media/
