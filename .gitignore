@@ -56,3 +56,5 @@ build/
 *.so
 
 cache/
+
+*.graphml
