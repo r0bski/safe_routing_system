@@ -9,7 +9,7 @@ def calc_route(start_coords, end_coords):
     and performs A* to find a route.
     """
     print("Loading Graph")
-    # 1) Load the precomputed graph
+    # Load the precomputed graph
     #    This graph already has data["custom_weight"] stored
     G = ox.load_graphml("london_with_crime.graphml")
     print("Graph loaded")
@@ -20,18 +20,13 @@ def calc_route(start_coords, end_coords):
             data["custom_weight"] = float(data["custom_weight"])
     print("Conversion done")
 
-    # 2) Convert node IDs to integers if needed
-    #    (NetworkX can sometimes store them as strings from GraphML)
-    #    If they're already int, skip this step.
-    #G = ox.utils_graph.convert_node_labels_to_integers(G, discard_old_labels=False)
-
-    # 3) Find the nearest node to start/end
+    # Find the nearest node to start/end
     start_lat, start_lon = start_coords
     end_lat, end_lon = end_coords
     start_node = ox.nearest_nodes(G, start_lon, start_lat)
     end_node = ox.nearest_nodes(G, end_lon, end_lat)
 
-    # 4) Define a simple distance heuristic for A*
+    # Define a simple distance heuristic for A*
     def heuristic(u, v):
         lat_u = G.nodes[u]["y"]
         lon_u = G.nodes[u]["x"]
@@ -39,7 +34,7 @@ def calc_route(start_coords, end_coords):
         lon_v = G.nodes[v]["x"]
         return geodesic((lat_u, lon_u), (lat_v, lon_v)).km
 
-    # 5) Run A* referencing the precomputed weight
+    # Run A* referencing the precomputed weight
     try:
         path_nodes = nx.astar_path(
             G,
@@ -48,9 +43,16 @@ def calc_route(start_coords, end_coords):
             weight="custom_weight",  # uses your precomputed cost
             heuristic=heuristic
         )
-        return path_nodes
     except nx.NetworkXNoPath:
         return None
+    
+    # Convert node IDs to lat/lon pairs
+    route_coords = []
+    for node_id in path_nodes:
+        lat = G.nodes[node_id]['y']
+        lon = G.nodes[node_id]['x']
+        route_coords.append([lat, lon])
+    return route_coords  # A list of [lat, lon]
 
 # Example test
 if __name__ == "__main__":

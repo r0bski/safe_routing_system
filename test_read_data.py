@@ -26,7 +26,7 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     }
     scores = []
     for crime_type in df["Crime type"]:
-        scores.append(crime_score_dict.get(crime_type, 1))  # int
+        scores.append(crime_score_dict.get(crime_type, 1))
 
     df = df.with_columns(pl.Series("Score", scores))
     
