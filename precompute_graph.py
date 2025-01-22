@@ -1,34 +1,23 @@
-#!/usr/bin/env python3
-
 """
 Precompute crime-based costs for each edge in London's walking network.
-Requires: pip install osmnx polars shapely rtree geopy
-Usage:
-    python precompute_edge_crime_costs.py
 """
 
-import os
 import polars as pl
 import osmnx as ox
-import networkx as nx
-
 from shapely.geometry import Point, LineString
 from rtree import index
-from geopy.distance import geodesic
 
-# ------------------------------------------------------------------
+
+
 # 1. CONFIGURATION
-# ------------------------------------------------------------------
-CRIME_PARQUET_PATH = "../compiled_data.parquet"  # Adjust path as needed
+CRIME_PARQUET_PATH = "../compiled_data.parquet"
 GRAPHML_OUTPUT_PATH = "london_with_crime.graphml"
 PLACE_NAME = "London, England, United Kingdom"
 
 SEARCH_RADIUS_KM = 0.1  # ~100 meters around the edge midpoint
 
 
-# ------------------------------------------------------------------
-# 2. HELPER FUNCTIONS
-# ------------------------------------------------------------------
+# 2. FUNCTIONS
 
 def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     df = df.select(["Longitude", "Latitude", "Crime type"])
@@ -135,32 +124,36 @@ def precompute_crime_weights(G, crime_df, radius_km=0.1):
     return G
 
 
-# ------------------------------------------------------------------
 # 3. MAIN SCRIPT
-# ------------------------------------------------------------------
 
 def main():
     print("Loading crime data...")
-    crime_data = pl.read_parquet("/Users/robertbulcock/Projects/safe_routing_system/compiled_data.parquet")
+    # Load crime data
+    crime_data = pl.read_parquet("./safe_routing_system/compiled_data.parquet")
+    # Filter null long/ lat rows from dataframe
     crime_data = crime_data.filter(
         (pl.col("Longitude").is_not_null()) &
         (pl.col("Latitude").is_not_null())
     )
+    # Add saftey scores
     crime_data = add_score_to_df(crime_data)
-    print(crime_data)
 
-    print("Loading London walk network with OSMnx...")
+    print("Loading London walk network with OSMnx")
+    # Load London road network
     G = ox.graph_from_place(PLACE_NAME, network_type='walk')
+    # Try simplifying graph
     if not G.graph.get("simplified", False):
         G = ox.simplify_graph(G)
     else:
         print("Graph is already simplified, skipping simplify_graph.")
         
 
-    print("Precomputing edge weights...")
+    print("Precomputing edge weights")
+    # Add crime score to each road and intersection
     G = precompute_crime_weights(G, crime_data, SEARCH_RADIUS_KM)
 
-    print(f"Saving final graph to {GRAPHML_OUTPUT_PATH}...")
+    print(f"Saving final graph to {GRAPHML_OUTPUT_PATH}")
+    # Save graph
     ox.save_graphml(G, GRAPHML_OUTPUT_PATH)
     print("Done!")
 

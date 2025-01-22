@@ -32,10 +32,23 @@
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 </script>
-{% if route_json %}
+
+{% if shortest_route_json %}
 <script>
-  var route = JSON.parse('{{ route_json|safe|escapejs }}');
-  var polyline = L.polyline(route, { color: 'blue' }).addTo(map);
+  // Get the shortest path json
+  var shortest_route = JSON.parse('{{ shortest_route_json|safe|escapejs }}');
+  // Add path to route
+  var polyline = L.polyline(shortest_route, { color: 'blue' }).addTo(map);
+  map.fitBounds(polyline.getBounds());
+</script>
+{% endif %}
+
+{% if safe_route_json %}
+<script>
+  // Get the safest path json
+  var safe_route = JSON.parse('{{ safe_route_json|safe|escapejs }}');
+  // Add path to map
+  var polyline = L.polyline(safe_route, { color: 'green' }).addTo(map);
   map.fitBounds(polyline.getBounds());
 </script>
 {% endif %}
