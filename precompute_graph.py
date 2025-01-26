@@ -8,19 +8,30 @@ from shapely.geometry import Point, LineString
 from rtree import index
 
 
-
-# 1. CONFIGURATION
+# Define paths and constants
 CRIME_PARQUET_PATH = "../compiled_data.parquet"
 GRAPHML_OUTPUT_PATH = "london_with_crime.graphml"
-PLACE_NAME = "London, England, United Kingdom"
 
+PLACE_NAME = "London, England, United Kingdom"
 SEARCH_RADIUS_KM = 0.1  # ~100 meters around the edge midpoint
 
 
-# 2. FUNCTIONS
+
 
 def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
+    """Add risk score column to each crime. 5 being crimes that must be avoided the most
+        and 1 being crimes that arn't dangerous like fraud and shoplifting
+
+
+    Args:
+        df (pl.DataFrame): Dataframe containg all crimes
+
+    Returns:
+        pl.DataFrame: Dataframe with added risk score column
+    """
+    # Filter all unneeded coloumns to reduce memory usage
     df = df.select(["Longitude", "Latitude", "Crime type"])
+    # Define dictionary with crime types and risk scores
     crime_score_dict = {
         'Violence and sexual offences': 5,
         'Other theft': 1,
@@ -38,39 +49,58 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
         'Shoplifting': 1
     }
     scores = []
+    # Make a list of all the scores of each crime
     for crime_type in df["Crime type"]:
         scores.append(crime_score_dict.get(crime_type, 1))  # int
 
+    # Add scores list as a column to the dataframe
     df = df.with_columns(pl.Series("Score", scores))
     
-    # Ensure the Score column is typed as integer
+    # Ensure the scores are stored as integers
     df = df.with_columns(pl.col("Score").cast(pl.Int64))
     return df
 
 def build_crime_rtree(crime_df: pl.DataFrame) -> index.Index:
+    """Build an R-tree for fast spatial lookups to reduce runtime.
+        Each entry's object will store the crime score.
+
+    Args:
+        crime_df (pl.DataFrame): Dataframe containing long, lat, Crime Type and Score
+
+    Returns:
+        index.Index: R-tree containing all crimes
     """
-    Build an R-tree for fast spatial lookups.
-    Each entry's 'obj' will store the crime score.
-    """
+    # initulise R-Tree
     crime_idx = index.Index()
+    # Iterate through dataframe
     for i, row in enumerate(crime_df.iter_rows()):
         lon, lat, score = row[0], row[1], row[3]
         pt = Point(lon, lat)
+        # Insert crime into R-tree
         crime_idx.insert(i, pt.bounds, obj=score)
     return crime_idx
 
 
 def compute_edge_crime_cost(u, v, data, G, crime_index, radius_km=0.1):
+    """Compute a weight for edge (u, v) that combines distance in km and 
+        sum of crime scores within radius_km of the edge midpoint.
+
+    Args:
+        u (_type_): _description_
+        v (_type_): _description_
+        data (_type_): _description_
+        G (MultiDiGraph): Road network of London
+        crime_index (_type_): R-tree contining each crime
+        radius_km (float, optional): Used to consider crimes near the edge. Defaults to 0.1.
+
+    Returns:
+        float: Crime factor calclated using crime scores and distance of crimes away from edge
     """
-    Compute a 'cost' for edge (u, v) that combines:
-      - distance (in km)
-      - sum of crime scores within ~radius_km of the edge midpoint.
-    """
-    # 1) Base distance in km
+    # Base distance in km
     base_dist_m = data.get("length", 0)
     base_dist_km = base_dist_m / 1000.0
 
-    # 2) Get the edge geometry (or fallback to node positions)
+    # Get the edge geometry
     geom = data.get("geometry", None)
     if geom is None:
         lat1, lon1 = G.nodes[u]['y'], G.nodes[u]['x']
@@ -79,52 +109,63 @@ def compute_edge_crime_cost(u, v, data, G, crime_index, radius_km=0.1):
     else:
         line = geom
 
-    # 3) Find midpoint of the edge
+    # Find midpoint of the edge
     midpoint = line.interpolate(0.5, normalized=True)
     mid_lon, mid_lat = midpoint.x, midpoint.y
 
-    # 4) Build a bounding box in degrees for the R-tree intersection
-    #    (We do a coarse bounding box, then refine if needed.)
-    #    ~1 degree of lat ~111 km, so for radius_km:
+    # Build a bounding box in degrees for the R-tree intersection
+    # 1 degree of lat is aproximatly 111 km, so for radius_km:
     deg_approx = radius_km / 111.0
-    minx = mid_lon - deg_approx
-    maxx = mid_lon + deg_approx
-    miny = mid_lat - deg_approx
-    maxy = mid_lat + deg_approx
+    min_x = mid_lon - deg_approx
+    max_x = mid_lon + deg_approx
+    min_y = mid_lat - deg_approx
+    max_y = mid_lat + deg_approx
 
-    # 5) Query the R-tree for crimes in that bounding box
-    hits = crime_index.intersection((minx, miny, maxx, maxy), objects=True)
+    # Get crimes in bounding box from R-tree
+    hits = crime_index.intersection((min_x, min_y, max_x, max_y), objects=True)
     
-    # 6) Sum up crime scores. Optionally do precise distance checks.
+    # Sum up crime scores
     crime_score_sum = 0
     for item in hits:
-        crime_score = int(item.object)  # we stored the score in obj
+        # Get score attribute of each crime obj
+        crime_score = int(item.object)
         crime_score_sum += crime_score
 
-    # 7) Combine distance with crime factor
+    # Combine distance with crime factor
     return base_dist_km + 0.01 * crime_score_sum
 
 
-def precompute_crime_weights(G, crime_df, radius_km=0.1):
+def precompute_crime_weights(G, crime_df: pl.DataFrame, radius_km=0.1):
+    """Precompute 'custom_weight' for each edge in the graph using an R-tree
+        to quickly sum nearby crime scores.
+
+    Args:
+        G (MultiDiGraph): Road network of London
+        crime_df (pl.DataFrame): Crime Dataframe
+        radius_km (float, optional): Size of radius. Defaults to 0.1.
+
+    Returns:
+        MultiDiGraph: London road network with added custom safty weights on each node and edge
     """
-    Precompute 'custom_weight' for each edge in the graph using an R-tree
-    to quickly sum nearby crime scores.
-    """
-    print("Building R-tree from crime data...")
+
+    print("Building R-tree from crime data")
     rtree_index = build_crime_rtree(crime_df)
 
-    print("Computing crime-based cost for edges...")
+    print("Computing crime-based cost for edges")
     edge_count = len(G.edges())
+    # Loop through every edge in network
     for i, (u, v, key, data) in enumerate(G.edges(keys=True, data=True), 1):
+        # Print progress every 1000 edges processed
         if i % 1000 == 0:
-            print(f"  Processed {i}/{edge_count} edges...")
+            print(f"  Processed {i}/{edge_count} edges")
+        # Calucilate the crime cost of the edge
         cost = compute_edge_crime_cost(u, v, data, G, rtree_index, radius_km)
+        # Add the cost as a custom weight to te grapg
         data["custom_weight"] = cost
 
     return G
 
 
-# 3. MAIN SCRIPT
 
 def main():
     print("Loading crime data...")
