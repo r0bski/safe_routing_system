@@ -18,6 +18,9 @@
 
     <button type="submit">Get Safe Route</button>
   </form>
+  {% if message %}
+    <p>{{ message }}</p>
+  {% endif %}
   {% if safe_len and short_len %}
   <p>Safe route length: {{ safe_len|floatformat:2 }} KM</p>
   <p>Shortest route length: {{ short_len|floatformat:2 }} KM</p>
@@ -57,8 +60,5 @@
 </script>
 {% endif %}
 
-{% if message %}
-  <p>{{ message }}</p>
-{% endif %}
 
 {% endblock content %}
