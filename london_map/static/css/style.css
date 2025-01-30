@@ -16,29 +16,29 @@
   .navbar-list {
     display: flex;
     justify-content: flex-start; /* Align items to the left */
-    list-style-type: none; /* Remove default bullet points */
+    list-style-type: none; 
     margin: 0;
     padding: 0;
   }
   
   .navbar-list li {
-    margin-right: 20px; /* Space between links */
+    margin-right: 20px; 
   }
   
   .navbar-list li a {
-    text-decoration: none; /* Remove underline from links */
-    color: white; /* Link text color */
+    text-decoration: none; 
+    color: white; 
     font-weight: bold;
     font-size: 16px;
     transition: color 0.3s ease;
   }
   
   .navbar-list li a:hover {
-    color: #FFD700; /* Gold color on hover */
+    color: #FFD700; 
   }
   
   .content {
-    padding: 20px; /* Space between content and the top */
+    padding: 20px; 
   }
   
 
@@ -54,22 +54,23 @@ html, body {
   #map {
     width: 100%;
     height: 96%;
-    position: absolute; /* or fixed if you prefer */
+    position: absolute;
     bottom: 0;
     left: 0;
   }
 
   /* The floating box */
   .floating-box {
-    position: absolute; /* or fixed */
+    position: absolute;
     top: 40px;
     left: 47px;
     z-index: 9999;
-    background-color: rgba(255, 255, 255, 0.9); 
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    max-width: 300px; /* optional max-width for the box */
+    max-width: 300px; 
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   /* Basic styling for form elements */

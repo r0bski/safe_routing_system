@@ -10,9 +10,11 @@ def about_view(request):
 
 def get_route(request):
     if request.method == 'POST':
+        # Get start and destination
         start = request.POST.get('start')
         destination = request.POST.get('destination')
 
+        # Get exact address of locations
         geolocator = Nominatim(user_agent="my_django_app")
         start_location = geolocator.geocode(start)
         destination_location = geolocator.geocode(destination)
@@ -22,11 +24,15 @@ def get_route(request):
                 'message': "Could not geocode one or both of the locations."
             })
 
+        # Convert to coordinates
         start_coords = (start_location.latitude, start_location.longitude)
         dest_coords = (destination_location.latitude, destination_location.longitude)
 
-        safe_route_coords, shortest_route_coords = calc_route(start_coords, dest_coords)  
-        # Route_coords is something like: [[51.5079, -0.0877], [51.5078, -0.0882], ... ]
+        # Calculate the safest and shortest route
+        (safe_route_coords, 
+         shortest_route_coords, 
+         safe_len, 
+         short_len) = calc_route(start_coords, dest_coords)  
 
         safe_route_json = json.dumps(safe_route_coords)
         shortest_route_json = json.dumps(shortest_route_coords)
@@ -34,7 +40,9 @@ def get_route(request):
         return render(request, 'maps/map_view.html', {
             'message': f"Route from {start} to {destination}",
             'safe_route_json': safe_route_json,
-            'shortest_route_json': shortest_route_json
+            'shortest_route_json': shortest_route_json,
+            'safe_len':safe_len,
+            'short_len':short_len
         })
 
     return render(request, 'maps/map_view.html')

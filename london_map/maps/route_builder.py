@@ -17,6 +17,19 @@ def get_graph():
         print("Graph already loaded")
     return GLOBAL_GRAPH
 
+def get_route_edge_attributes(G, route, attribute):
+    """
+    Given a list of node IDs (route), return a list of `attribute`
+    values for each edge along that route.
+    """
+    values = []
+    for u, v in zip(route[:-1], route[1:]):
+        edge_data = G[u][v][0] 
+        val = edge_data.get(attribute, None)
+        values.append(val)
+    return values
+
+
 
 
 def calc_route(start_coords, end_coords):
@@ -49,6 +62,7 @@ def calc_route(start_coords, end_coords):
 
     # Run A* referencing the precomputed weight
     try:
+        # Find safest route
         safest_path_nodes = nx.astar_path(
             G,
             source=start_node,
@@ -56,6 +70,7 @@ def calc_route(start_coords, end_coords):
             weight="custom_weight",  # uses precomputed safty weight
             heuristic=heuristic
         )
+        # Find shortest route
         shortest_path_nodes = nx.astar_path(
             G,
             source=start_node,
@@ -75,9 +90,23 @@ def calc_route(start_coords, end_coords):
             route_coords.append([lat, lon])
         return route_coords
     
+    # Get the lengths of all edges in each route
+    lengths_safe = get_route_edge_attributes(G, safest_path_nodes, 'length')
+    lengths_short = get_route_edge_attributes(G, shortest_path_nodes, 'length')
+    # Sum up the lengths of each edge in the routes
+    safe_len = sum(length for length in lengths_safe if length is not None)
+    short_len = sum(length for length in lengths_short if length is not None)
+    # Convert to km and round to 2 dp
+    safe_len = safe_len/1000
+    short_len = short_len/1000
+    
+
     safe_route = convert_IDs_to_coords(safest_path_nodes)
     shortest_route = convert_IDs_to_coords(shortest_path_nodes)
-    return safe_route, shortest_route
+
+    return safe_route, shortest_route, safe_len, short_len
+
+
 
 # Example test
 if __name__ == "__main__":

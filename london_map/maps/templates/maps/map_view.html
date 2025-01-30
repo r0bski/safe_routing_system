@@ -18,6 +18,10 @@
 
     <button type="submit">Get Safe Route</button>
   </form>
+  {% if safe_len and short_len %}
+  <p>Safe route length: {{ safe_len|floatformat:2 }} KM</p>
+  <p>Shortest route length: {{ short_len|floatformat:2 }} KM</p>
+{% endif %}
 </div>
 
 <!-- Leaflet JS -->
