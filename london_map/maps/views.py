@@ -30,19 +30,24 @@ def get_route(request):
 
         # Calculate the safest and shortest route
         (safe_route_coords, 
-         shortest_route_coords, 
+         shortest_route_coords,
+         balanced_route_coords, 
          safe_len, 
-         short_len) = calc_route(start_coords, dest_coords)  
+         short_len,
+         balanced_len) = calc_route(start_coords, dest_coords)  
 
         safe_route_json = json.dumps(safe_route_coords)
         shortest_route_json = json.dumps(shortest_route_coords)
+        balanced_route_json = json.dumps(balanced_route_coords)
 
         return render(request, 'maps/map_view.html', {
             'message': f"Route from {start} to {destination}",
             'safe_route_json': safe_route_json,
             'shortest_route_json': shortest_route_json,
-            'safe_len':safe_len,
-            'short_len':short_len
+            'balanced_route_json': balanced_route_json,
+            'safe_len': safe_len,
+            'short_len': short_len,
+            'balanced_len': balanced_len
         })
 
     return render(request, 'maps/map_view.html')

@@ -10,7 +10,7 @@ from rtree import index
 
 # Define paths and constants
 CRIME_PARQUET_PATH = "../compiled_data.parquet"
-GRAPHML_OUTPUT_PATH = "london_with_crime.graphml"
+GRAPHML_OUTPUT_PATH = "london_with_combined_data.graphml"
 
 PLACE_NAME = "London, England, United Kingdom"
 SEARCH_RADIUS_KM = 0.1  # ~100 meters around the edge midpoint
@@ -156,12 +156,19 @@ def precompute_crime_weights(G, crime_df: pl.DataFrame, radius_km=0.1):
     # Loop through every edge in network
     for i, (u, v, key, data) in enumerate(G.edges(keys=True, data=True), 1):
         # Print progress every 1000 edges processed
-        if i % 1000 == 0:
+        if i % 10000 == 0:
             print(f"  Processed {i}/{edge_count} edges")
         # Calucilate the crime cost of the edge
         cost = compute_edge_crime_cost(u, v, data, G, rtree_index, radius_km)
+
+        base_dist_m = data.get("length", 0)
+
         # Add the cost as a custom weight to te grapg
-        data["custom_weight"] = cost
+        data["custom_weight"] = cost + 0.1 * base_dist_m
+
+        # Also create a combined weight = crime-based cost + length
+        data["combined_weight"] = cost + 0.25 * base_dist_m
+
 
     return G
 
@@ -170,7 +177,7 @@ def precompute_crime_weights(G, crime_df: pl.DataFrame, radius_km=0.1):
 def main():
     print("Loading crime data...")
     # Load crime data
-    crime_data = pl.read_parquet("./safe_routing_system/compiled_data.parquet")
+    crime_data = pl.read_parquet(CRIME_PARQUET_PATH)
     # Filter null long/ lat rows from dataframe
     crime_data = crime_data.filter(
         (pl.col("Longitude").is_not_null()) &
@@ -181,13 +188,15 @@ def main():
 
     print("Loading London walk network with OSMnx")
     # Load London road network
+    """
     G = ox.graph_from_place(PLACE_NAME, network_type='walk')
     # Try simplifying graph
     if not G.graph.get("simplified", False):
         G = ox.simplify_graph(G)
     else:
         print("Graph is already simplified, skipping simplify_graph.")
-        
+    """
+    G = ox.load_graphml("london_with_crime.graphml")
 
     print("Precomputing edge weights")
     # Add crime score to each road and intersection

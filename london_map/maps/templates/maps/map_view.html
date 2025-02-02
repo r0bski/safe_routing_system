@@ -21,10 +21,11 @@
   {% if message %}
     <p>{{ message }}</p>
   {% endif %}
-  {% if safe_len and short_len %}
-  <p>Safe route length: {{ safe_len|floatformat:2 }} KM</p>
+  {% if safe_len and short_len and balanced_len%}
   <p>Shortest route length: {{ short_len|floatformat:2 }} KM</p>
-{% endif %}
+  <p>Balanced route length: {{ balanced_len|floatformat:2 }} KM</p>
+  <p>Safe route length: {{ safe_len|floatformat:2 }} KM</p>
+  {% endif %}
 </div>
 
 <!-- Leaflet JS -->
@@ -45,8 +46,19 @@
   // Get the shortest path json
   var shortest_route = JSON.parse('{{ shortest_route_json|safe|escapejs }}');
   // Add path to route
-  var polyline = L.polyline(shortest_route, { color: 'blue' }).addTo(map);
+  var polyline = L.polyline(shortest_route, { color: 'red' }).addTo(map);
   map.fitBounds(polyline.getBounds());
+</script>
+{% endif %}
+
+{% if balanced_route_json %}
+<script>
+  // Get the balanced path json
+  var balanced_route = JSON.parse('{{ balanced_route_json|safe|escapejs }}');
+  // Add path to route
+  var polyline = L.polyline(balanced_route, { color: 'blue' }).addTo(map);
+  map.fitBounds(polyline.getBounds());
+
 </script>
 {% endif %}
 
