@@ -19,13 +19,21 @@
     <button type="submit">Get Safe Route</button>
   </form>
   {% if message %}
-    <p>{{ message }}</p>
+    <h3>{{ message }}</h3>
   {% endif %}
   {% if safe_len and short_len and balanced_len%}
   <p>Shortest route length: {{ short_len|floatformat:2 }} KM</p>
   <p>Balanced route length: {{ balanced_len|floatformat:2 }} KM</p>
-  <p>Safe route length: {{ safe_len|floatformat:2 }} KM</p>
+  <p>Safest route length: {{ safe_len|floatformat:2 }} KM</p>
   {% endif %}
+</div>
+
+
+<div class="legend">
+  <h4>Routes Legend</h4>
+  <div><span class="legend-color" style="background-color: red;"></span> Shortest Route</div>
+  <div><span class="legend-color" style="background-color: blue;"></span> Balanced Route</div>
+  <div><span class="legend-color" style="background-color: green;"></span> Safest Route</div>
 </div>
 
 <!-- Leaflet JS -->
