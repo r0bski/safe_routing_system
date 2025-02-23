@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .route_builder import calc_route
 from geopy.geocoders import Nominatim
 import json
+
 def map_view(request):
     return render(request, 'maps/map_view.html')
 
@@ -51,3 +52,8 @@ def get_route(request):
         })
 
     return render(request, 'maps/map_view.html')
+
+
+def crime_view(request):
+    #TODO...
+    return render(request, 'maps/crime_locations.html')

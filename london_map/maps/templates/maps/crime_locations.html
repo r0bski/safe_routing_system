@@ -1,0 +1,30 @@
+{% extends 'maps/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- The map fills the entire background -->
+<div id="map"></div>
+
+
+
+
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Initialize the map
+  var map = L.map('map').setView([51.5074, -0.1278], 13);
+
+  // Add OSM tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+</script>
+
+
+
+
+
+
+{% endblock content %}
