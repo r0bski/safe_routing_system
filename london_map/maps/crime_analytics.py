@@ -1,10 +1,33 @@
 import polars as pl
+import json
+import math
 
-df=pl.read_parquet("compiled_data.parquet")
-df = df.filter(
+FILE_NAME = "../compiled_data.parquet"
+
+
+
+def crime_heatmap():
+    df=pl.read_parquet(FILE_NAME)
+    df = df.filter(
         (pl.col("Longitude").is_not_null()) &
         (pl.col("Latitude").is_not_null())
     )
+    df = add_score_to_df(df)
+
+    heat_points = []
+    for row in df.iter_rows():
+        lon = row[0]
+        lat = row[1]
+        score = row[3]
+        # Skip if missing or invalid
+        if lat is not None and lon is not None:
+            # Convert lat/lon to float
+            heat_points.append([float(lat), float(lon), float(score)])
+
+
+    return heat_points
+
+
 
 def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     df = df.select(["Longitude", "Latitude", "Crime type"])
@@ -33,6 +56,7 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     # Ensure the Score column is typed as integer
     df = df.with_columns(pl.col("Score").cast(pl.Int64))
     return df
-df=add_score_to_df(df)
-print(df)
-#df.write_parquet("crime_data_with_scores.parquet")
+
+
+if __name__ == "__main__":
+    heat_data = crime_heatmap()

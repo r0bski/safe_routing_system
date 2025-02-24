@@ -113,6 +113,3 @@ def calc_route(start_coords, end_coords):
     balanced_route = convert_IDs_to_coords(balanced_path_nodes)
 
     return safe_route, shortest_route, balanced_route, safe_len, short_len, balanced_len
-
-
-

@@ -7,12 +7,12 @@
 
 
 
-
-
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- leaflet-heat plugin -->
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 <script>
-  // Initialize the map
+  // Initialise the map
   var map = L.map('map').setView([51.5074, -0.1278], 13);
 
   // Add OSM tile layer
@@ -20,9 +20,19 @@
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
+
+  var heatPoints = JSON.parse('{{ heat_json|safe|escapejs }}');
+  // e.g. [[51.50, -0.12, 45], [51.49, -0.13, 10], ...]
+  //console.log(heatPoints)
+
+  var heat = L.heatLayer(heatPoints, {
+    radius: 10,
+    blur: 15,
+    maxZoom: 17,
+    max: 5,
+  }).addTo(map);
+
 </script>
-
-
 
 
 
