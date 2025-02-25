@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .route_builder import calc_route
 from .crime_analytics import crime_heatmap
+from .crime_analytics import crime_counts
 from geopy.geocoders import Nominatim
 import json
 
@@ -8,7 +9,11 @@ def map_view(request):
     return render(request, 'maps/map_view.html')
 
 def about_view(request):
-    return render(request, 'maps/about.html')
+    crime_dict = crime_counts()
+    crime_json = json.dumps(crime_dict)
+    return render(request, 'maps/about.html',{
+        'crime_json': crime_json
+    })
 
 def get_route(request):
     if request.method == 'POST':

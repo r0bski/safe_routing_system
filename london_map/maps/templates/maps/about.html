@@ -6,12 +6,49 @@
 <head>
     <meta charset="UTF-8"/>
     <title>About</title>
+    <style>
+        /* Basic styling for table */
+        table, th, td {
+          border: 1px solid #ccc;
+          border-collapse: collapse;
+          padding: 6px;
+        }
+        table {
+          width: 300px;
+          margin: 1rem 0;
+        }
+      </style>
 </head>
 <body>
     <div class="about_text">
         <h1>Safe Route Finder</h1>
-        <p>This website uses police crime data to plot routes through London to help prevent </p>
+        <p>This website uses police crime data to plot routes through London to help predestrians avoid areas 
+            of high crime. 
+        </p>
+        <br>
+        <h1>Police Data Contents</h1>
     </div>
+
+    <div id="myGrid"></div>
+
+    <script>
+        var dict = JSON.parse('{{ crime_json|safe|escapejs }}');
+
+        function buildTableFromDict(dict) {
+            var html = "<table>";
+            html += "<tr><th>Crime Type</th><th>Number of crimes commited</th></tr>";
+            for (var key in dict) {
+            if (dict.hasOwnProperty(key)) {
+                html += "<tr><td>" + key + "</td><td>" + dict[key] + "</td></tr>";
+            }
+            }
+            html += "</table>";
+            return html;
+        }
+
+        var container = document.getElementById("myGrid");
+        container.innerHTML = buildTableFromDict(dict);
+    </script>
 </body>
 </html>
 {% endblock content %}

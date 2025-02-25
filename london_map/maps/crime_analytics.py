@@ -1,12 +1,11 @@
 import polars as pl
-import json
-import math
 
 FILE_NAME = "../compiled_data.parquet"
 
 
 
 def crime_heatmap():
+
     df=pl.read_parquet(FILE_NAME)
     df = df.filter(
         (pl.col("Longitude").is_not_null()) &
@@ -57,6 +56,37 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     df = df.with_columns(pl.col("Score").cast(pl.Int64))
     return df
 
+
+def crime_counts():
+    df=pl.read_parquet(FILE_NAME)
+    df = df.filter(
+        (pl.col("Longitude").is_not_null()) &
+        (pl.col("Latitude").is_not_null())
+    )
+    df = add_score_to_df(df)
+
+    crime_totals = {
+        'Violence and sexual offences': 0,
+        'Other theft': 0,
+        'Anti-social behaviour': 0,
+        'Criminal damage and arson': 0,
+        'Drugs': 0,
+        'Public order': 0,
+        'Robbery': 0,
+        'Vehicle crime': 0,
+        'Other crime': 0,
+        'Burglary': 0,
+        'Possession of weapons': 0,
+        'Theft from the person': 0,
+        'Bicycle theft': 0,
+        'Shoplifting': 0
+    }
+    for row in df.iter_rows():
+        for key in crime_totals.keys():
+            if row[2] == key:
+                crime_totals[key] = crime_totals[key] + 1
+    
+    return crime_totals
 
 if __name__ == "__main__":
     heat_data = crime_heatmap()
