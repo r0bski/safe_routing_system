@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .route_builder import calc_route
 from .crime_analytics import crime_heatmap
 from .crime_analytics import crime_counts
+from .crime_analytics import generate_temporal_plot
 from geopy.geocoders import Nominatim
 import json
 
@@ -66,4 +67,39 @@ def crime_view(request):
 
     return render(request, 'maps/crime_heatmap.html', {
         "heat_json": heat_json
+    })
+
+def temporal_view(request):
+    # All possible crime types you want as buttons
+    # (including 'All Crimes' as a special "no filter")
+    crime_types = [
+        'All Crimes',
+        'Violence and sexual offences',
+        'Other theft',
+        'Anti-social behaviour',
+        'Criminal damage and arson',
+        'Drugs',
+        'Public order',
+        'Robbery',
+        'Vehicle crime',
+        'Other crime',
+        'Burglary',
+        'Possession of weapons',
+        'Theft from the person',
+        'Bicycle theft',
+        'Shoplifting'
+    ]
+
+    # 1) Grab filter from query param, e.g. ?filter=Robbery
+    filter_str = request.GET.get('filter', 'All Crimes')
+
+    # 2) Generate the data for that filter
+    line_data = generate_temporal_plot(filter_str)
+    line_json = json.dumps(line_data)
+
+    # 3) Render template
+    return render(request, 'maps/temporal_analysis.html', {
+        'crime_types': crime_types,
+        'selected_type': filter_str,
+        'line_json': line_json
     })

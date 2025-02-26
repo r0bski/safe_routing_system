@@ -59,10 +59,7 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
 
 def crime_counts():
     df=pl.read_parquet(FILE_NAME)
-    df = df.filter(
-        (pl.col("Longitude").is_not_null()) &
-        (pl.col("Latitude").is_not_null())
-    )
+
     df = add_score_to_df(df)
 
     crime_totals = {
@@ -79,14 +76,39 @@ def crime_counts():
         'Possession of weapons': 0,
         'Theft from the person': 0,
         'Bicycle theft': 0,
-        'Shoplifting': 0
+        'Shoplifting': 0,
+        'Total number of crimes': 0
     }
+
     for row in df.iter_rows():
         for key in crime_totals.keys():
             if row[2] == key:
                 crime_totals[key] = crime_totals[key] + 1
+        crime_totals["Total number of crimes"] = (
+                crime_totals["Total number of crimes"] +1 )
     
     return crime_totals
 
+
+def generate_temporal_plot(filter:str = "All Crimes"):
+    df = pl.read_parquet(FILE_NAME)
+    df = df.filter(pl.col("Month").is_not_null())
+    if filter != "All Crimes":
+        df = df.filter(pl.col("Crime type") == filter)
+    # Group by month and count
+    df_agg = df.group_by("Month").agg(pl.len().alias("crime_count"))
+    # Sort the months
+    df_agg = df_agg.sort("Month")
+    # Convert to a list of dicts or two parallel lists
+    months = df_agg.select("Month").to_series().to_list()
+    counts = df_agg.select("crime_count").to_series().to_list()
+    line_data = {
+        "labels": months,
+        "data": counts
+    }
+
+    return line_data
+
 if __name__ == "__main__":
-    heat_data = crime_heatmap()
+
+    generate_temporal_plot()

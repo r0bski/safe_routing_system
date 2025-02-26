@@ -1,0 +1,104 @@
+{% extends "maps/base.html" %}
+{% load static %}
+{% block content %}
+
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Temporal Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #chartContainer {
+            width: 80%;
+            margin: auto;
+        }
+        #myChart {
+            width: 100%;
+            height: 400px;
+        }
+        /* Some styling for the buttons */
+        .filter-buttons {
+            width: 80%;
+            margin: 1rem auto;
+            text-align: center;
+        }
+        .filter-buttons button {
+            margin: 0.25rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+      </style>
+</head>
+<body>
+    <h1>Number of Crimes Over Time</h1>
+
+    <!-- 1) Filter Buttons -->
+    <div class="filter-buttons">
+        {% for ctype in crime_types %}
+        <button 
+          {% if ctype == selected_type %} style="background-color: #ccc;" {% endif %}
+          onclick="window.location.href='?filter={{ ctype|urlencode }}'">
+          {{ ctype }}
+        </button>
+        {% endfor %}
+    </div>
+
+<p id="totals"></p>
+<div id="chartContainer">
+  <canvas id="myChart"></canvas>
+</div>
+
+
+<script>
+    // 1) Parse line_json from Django
+    var lineData = JSON.parse('{{ line_json|safe|escapejs }}');
+    // lineData = { labels: [...], data: [...] }
+
+    // 2) Extract arrays
+    var months = lineData.labels;  // e.g. ["2021-09","2021-10","2021-11",...]
+    var counts = lineData.data;    // e.g. [234, 210, 195, ...]
+
+    let sum = counts.reduce((partialSum, a) => partialSum + a, 0);
+    document.getElementById("totals").innerHTML = "<h3>Showing "+sum+" crimes</h3>"
+
+    // 3) Create a Chart.js line chart
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line', 
+        data: {
+        labels: months,
+        datasets: [{
+            label: 'Crimes',
+            data: counts,
+            borderColor: 'rgba(255, 99, 132, 1)', 
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: true, 
+            tension: 0.1 
+        }]
+        },
+        options: {
+        responsive: true,
+        scales: {
+            y: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Number of Crimes'
+            }
+            },
+            x: {
+            title: {
+                display: true,
+                text: 'Month'
+            }
+            }
+        }
+        }
+    });
+</script>
+
+
+</body>
+</html>
+{% endblock content %}
