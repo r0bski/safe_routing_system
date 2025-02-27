@@ -59,7 +59,7 @@
     var counts = lineData.data;    // e.g. [234, 210, 195, ...]
 
     let sum = counts.reduce((partialSum, a) => partialSum + a, 0);
-    document.getElementById("totals").innerHTML = "<h3>Showing "+sum+" crimes</h3>"
+    document.getElementById("totals").innerHTML = "<h3>Showing "+sum.toLocaleString()+" crimes</h3>"
 
     // 3) Create a Chart.js line chart
     var ctx = document.getElementById('myChart').getContext('2d');

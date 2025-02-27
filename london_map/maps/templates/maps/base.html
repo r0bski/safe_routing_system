@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Safe Routing App{% endblock title %}</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -15,7 +14,7 @@
   <!-- Navigation Bar -->
   <nav class="navbar">
     <ul class="navbar-list">
-        <li><a href="{% url 'map_view' %}">Map View</a></li>
+        <li><a href="{% url 'map_view' %}">Path Finder</a></li>
         <li><a href="{% url 'about' %}">About</a></li>
         <li><a href="{% url 'crime_heatmap' %}">Crime Heatmap</a></li>
         <li><a href="{% url 'temporal_analysis' %}">Temporal Analysis</a></li>
