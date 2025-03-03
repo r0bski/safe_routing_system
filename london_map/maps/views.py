@@ -3,18 +3,16 @@ from .route_builder import calc_route
 from .crime_analytics import crime_heatmap
 from .crime_analytics import crime_counts
 from .crime_analytics import generate_temporal_plot
+from .route_builder import clear_map_from_memory
 from geopy.geocoders import Nominatim
 import json
+
+DEBUG = True
+
 
 def map_view(request):
     return render(request, 'maps/map_view.html')
 
-def about_view(request):
-    crime_dict = crime_counts()
-    crime_json = json.dumps(crime_dict)
-    return render(request, 'maps/about.html',{
-        'crime_json': crime_json
-    })
 
 def get_route(request):
     if request.method == 'POST':
@@ -61,7 +59,19 @@ def get_route(request):
     return render(request, 'maps/map_view.html')
 
 
+def about_view(request):
+    global DEBUG
+    clear_map_from_memory(DEBUG)
+    crime_dict = crime_counts()
+    crime_json = json.dumps(crime_dict)
+    return render(request, 'maps/about.html',{
+        'crime_json': crime_json
+    })
+
+
 def crime_view(request):
+    global DEBUG
+    clear_map_from_memory(DEBUG)
     heat_data = crime_heatmap() #aggregate_crimes_1km()  # produces a list of [lat, lon, intensity]
     heat_json = json.dumps(heat_data)
 
@@ -70,6 +80,8 @@ def crime_view(request):
     })
 
 def temporal_view(request):
+    global DEBUG
+    clear_map_from_memory(DEBUG)
     # All possible crime types you want as buttons
     # (including 'All Crimes' as a special "no filter")
     crime_types = [

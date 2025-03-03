@@ -112,4 +112,18 @@ def calc_route(start_coords, end_coords):
     shortest_route = convert_IDs_to_coords(shortest_path_nodes)
     balanced_route = convert_IDs_to_coords(balanced_path_nodes)
 
+
     return safe_route, shortest_route, balanced_route, safe_len, short_len, balanced_len
+
+def clear_map_from_memory(debug):
+    """
+    Sets the GLOBAL_GRAPH to None and forces GC,
+    freeing up the memory if no other references exist.
+    """
+    if debug == False:
+        return
+    global GLOBAL_GRAPH
+    if GLOBAL_GRAPH is not None:
+        GLOBAL_GRAPH = None
+    import gc
+    gc.collect()
