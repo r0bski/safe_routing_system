@@ -24,6 +24,6 @@ urlpatterns = [
     path('', map_view, name='map_view'),  # Set the root URL to show the map
     path('get-route/', get_route, name='get_route'),
     path('about/', about_view, name='about'), 
-    path('crime-heatmap/', crime_view, name='crime_heatmap'),
+    path('crime-heatmap/', heatmap_view, name='crime_heatmap'),
     path('temporal-analysis/', temporal_view, name='temporal_analysis')
 ]

@@ -69,7 +69,7 @@ def about_view(request):
     })
 
 
-def crime_view(request):
+def heatmap_view(request):
     global DEBUG
     clear_map_from_memory(DEBUG)
     heat_data = crime_heatmap() #aggregate_crimes_1km()  # produces a list of [lat, lon, intensity]
