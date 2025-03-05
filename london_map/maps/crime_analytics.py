@@ -31,20 +31,20 @@ def crime_heatmap():
 def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     df = df.select(["Longitude", "Latitude", "Crime type"])
     crime_score_dict = {
-        'Violence and sexual offences': 5,
-        'Other theft': 1,
-        'Anti-social behaviour': 4,
-        'Criminal damage and arson': 2,
-        'Drugs': 3,
-        'Public order': 5,
-        'Robbery': 5,
-        'Vehicle crime': 2,
-        'Other crime': 1,
-        'Burglary': 2,
-        'Possession of weapons': 5,
-        'Theft from the person': 5,
-        'Bicycle theft': 2,
-        'Shoplifting': 1
+        "Violence and sexual offences": 5,
+        "Other theft": 1,
+        "Anti-social behaviour": 4,
+        "Criminal damage and arson": 2,
+        "Drugs": 3,
+        "Public order": 5,
+        "Robbery": 5,
+        "Vehicle crime": 2,
+        "Other crime": 1,
+        "Burglary": 2,
+        "Possession of weapons": 5,
+        "Theft from the person": 5,
+        "Bicycle theft": 2,
+        "Shoplifting": 1
     }
     scores = []
     for crime_type in df["Crime type"]:
@@ -63,21 +63,21 @@ def crime_counts():
     df = add_score_to_df(df)
 
     crime_totals = {
-        'Violence and sexual offences': 0,
-        'Other theft': 0,
-        'Anti-social behaviour': 0,
-        'Criminal damage and arson': 0,
-        'Drugs': 0,
-        'Public order': 0,
-        'Robbery': 0,
-        'Vehicle crime': 0,
-        'Other crime': 0,
-        'Burglary': 0,
-        'Possession of weapons': 0,
-        'Theft from the person': 0,
-        'Bicycle theft': 0,
-        'Shoplifting': 0,
-        'Total number of crimes': 0
+        "Violence and sexual offences": 0,
+        "Other theft": 0,
+        "Anti-social behaviour": 0,
+        "Criminal damage and arson": 0,
+        "Drugs": 0,
+        "Public order": 0,
+        "Robbery": 0,
+        "Vehicle crime": 0,
+        "Other crime": 0,
+        "Burglary": 0,
+        "Possession of weapons": 0,
+        "Theft from the person": 0,
+        "Bicycle theft": 0,
+        "Shoplifting": 0,
+        "Total number of crimes": 0
     }
 
     for row in df.iter_rows():

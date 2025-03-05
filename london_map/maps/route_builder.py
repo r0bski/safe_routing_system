@@ -5,6 +5,20 @@ from geopy.distance import geodesic
 # Global variable (initially None)
 GLOBAL_GRAPH = None
 
+# Approximate box for Greater London
+LONDON_MIN_LAT = 51.2871665
+LONDON_MAX_LAT = 51.6908053
+LONDON_MIN_LON = -0.5062174
+LONDON_MAX_LON = 0.3258905
+
+def is_in_london(lat, lon):
+    return (
+        LONDON_MIN_LAT <= lat <= LONDON_MAX_LAT and
+        LONDON_MIN_LON <= lon <= LONDON_MAX_LON
+    )
+
+
+
 def get_graph():
     """
     Returns the precomputed graph, loading it once if needed.
@@ -59,7 +73,7 @@ def a_star(G, start_node, end_node, givern_weight:str):
 
 def calc_route(start_coords, end_coords):
     """
-    Loads a precomputed graph with 'custom_weight' on each edge
+    Loads a precomputed graph with "custom_weight" on each edge
     and performs A* to find a route.
     """
     # Load the precomputed graph
@@ -89,14 +103,14 @@ def calc_route(start_coords, end_coords):
         # Convert node IDs to lat/lon pairs
         route_coords = []
         for node_id in path_nodes:
-            lat = G.nodes[node_id]['y']
-            lon = G.nodes[node_id]['x']
+            lat = G.nodes[node_id]["y"]
+            lon = G.nodes[node_id]["x"]
             route_coords.append([lat, lon])
         return route_coords
     
     # Get the lengths of all edges in each route
-    lengths_safe = get_route_edge_attributes(G, safest_path_nodes, 'length')
-    lengths_short = get_route_edge_attributes(G, shortest_path_nodes, 'length')
+    lengths_safe = get_route_edge_attributes(G, safest_path_nodes, "length")
+    lengths_short = get_route_edge_attributes(G, shortest_path_nodes, "length")
     lengths_balanced = get_route_edge_attributes(G, balanced_path_nodes, "length")
     # Sum up the lengths of each edge in the routes
     safe_len = sum(length for length in lengths_safe if length is not None)
@@ -114,6 +128,8 @@ def calc_route(start_coords, end_coords):
 
 
     return safe_route, shortest_route, balanced_route, safe_len, short_len, balanced_len
+
+
 
 def clear_map_from_memory(debug):
     """

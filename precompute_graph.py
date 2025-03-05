@@ -33,20 +33,20 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
     df = df.select(["Longitude", "Latitude", "Crime type"])
     # Define dictionary with crime types and risk scores
     crime_score_dict = {
-        'Violence and sexual offences': 5,
-        'Other theft': 1,
-        'Anti-social behaviour': 4,
-        'Criminal damage and arson': 2,
-        'Drugs': 3,
-        'Public order': 5,
-        'Robbery': 5,
-        'Vehicle crime': 2,
-        'Other crime': 1,
-        'Burglary': 2,
-        'Possession of weapons': 5,
-        'Theft from the person': 5,
-        'Bicycle theft': 2,
-        'Shoplifting': 1
+        "Violence and sexual offences": 5,
+        "Other theft": 1,
+        "Anti-social behaviour": 4,
+        "Criminal damage and arson": 2,
+        "Drugs": 3,
+        "Public order": 5,
+        "Robbery": 5,
+        "Vehicle crime": 2,
+        "Other crime": 1,
+        "Burglary": 2,
+        "Possession of weapons": 5,
+        "Theft from the person": 5,
+        "Bicycle theft": 2,
+        "Shoplifting": 1
     }
     scores = []
     # Make a list of all the scores of each crime
@@ -62,7 +62,7 @@ def add_score_to_df(df: pl.DataFrame) -> pl.DataFrame:
 
 def build_crime_rtree(crime_df: pl.DataFrame) -> index.Index:
     """Build an R-tree for fast spatial lookups to reduce runtime.
-        Each entry's object will store the crime score.
+        Each entry"s object will store the crime score.
 
     Args:
         crime_df (pl.DataFrame): Dataframe containing long, lat, Crime Type and Score
@@ -103,8 +103,8 @@ def compute_edge_crime_cost(u, v, data, G, crime_index, radius_km=0.1):
     # Get the edge geometry
     geom = data.get("geometry", None)
     if geom is None:
-        lat1, lon1 = G.nodes[u]['y'], G.nodes[u]['x']
-        lat2, lon2 = G.nodes[v]['y'], G.nodes[v]['x']
+        lat1, lon1 = G.nodes[u]["y"], G.nodes[u]["x"]
+        lat2, lon2 = G.nodes[v]["y"], G.nodes[v]["x"]
         line = LineString([(lon1, lat1), (lon2, lat2)])
     else:
         line = geom
@@ -136,7 +136,7 @@ def compute_edge_crime_cost(u, v, data, G, crime_index, radius_km=0.1):
 
 
 def precompute_crime_weights(G, crime_df: pl.DataFrame, radius_km=0.1):
-    """Precompute 'custom_weight' for each edge in the graph using an R-tree
+    """Precompute "custom_weight" for each edge in the graph using an R-tree
         to quickly sum nearby crime scores.
 
     Args:
@@ -189,7 +189,7 @@ def main():
     print("Loading London walk network with OSMnx")
     # Load London road network
     """
-    G = ox.graph_from_place(PLACE_NAME, network_type='walk')
+    G = ox.graph_from_place(PLACE_NAME, network_type="walk")
     # Try simplifying graph
     if not G.graph.get("simplified", False):
         G = ox.simplify_graph(G)
