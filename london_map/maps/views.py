@@ -36,7 +36,7 @@ def get_route(request):
         dest_coords = (destination_location.latitude, destination_location.longitude)
 
 
-        # Check if they are within London’s bounding box
+        # Check if they are within London
         if not is_in_london(*start_coords):
             return render(request, "maps/map_view.html", {
                 "message": f"Your start location '{start}' is outside of London."
@@ -84,7 +84,7 @@ def about_view(request):
 def heatmap_view(request):
     global DEBUG
     clear_map_from_memory(DEBUG)
-    heat_data = crime_heatmap() #aggregate_crimes_1km()  # produces a list of [lat, lon, intensity]
+    heat_data = crime_heatmap()
     heat_json = json.dumps(heat_data)
 
     return render(request, "maps/crime_heatmap.html", {
@@ -94,8 +94,6 @@ def heatmap_view(request):
 def temporal_view(request):
     global DEBUG
     clear_map_from_memory(DEBUG)
-    # All possible crime types you want as buttons
-    # (including "All Crimes" as a special "no filter")
     crime_types = [
         "All Crimes",
         "Violence and sexual offences",
@@ -114,10 +112,10 @@ def temporal_view(request):
         "Shoplifting"
     ]
 
-    # Grab filter from query param, e.g. ?filter=Robbery
+    # Get filter from request
     filter_str = request.GET.get("filter", "All Crimes")
 
-    # Generate the data for that filter
+    # Generate the filterd data
     line_data = generate_temporal_plot(filter_str)
     line_json = json.dumps(line_data)
 

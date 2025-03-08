@@ -1,173 +1,257 @@
-/* static/css/style.css */
+/* Example: Import Google Fonts in your HTML head:
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans&display=swap">
+*/
 
-/* Navigation Bar Styling */
-.navbar {
-    background-color: #333; /* Dark background color */
-    color: white;
-    padding: 10px 20px;
-    position: sticky; /* Sticks to the top when scrolling */
-    top: 0;
-    z-index: 1000; /* Ensure it's above other elements */
-    width: 100%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: Georgia, 'Times New Roman', Times, serif;
-  }
-  
-  .navbar-list {
-    display: flex;
-    justify-content: flex-start; /* Align items to the left */
-    list-style-type: none; 
-    margin: 0;
-    padding: 0;
-  }
-  
-  .navbar-list li {
-    margin-right: 20px; 
-  }
-  
-  .navbar-list li a {
-    text-decoration: none; 
-    color: white; 
-    font-weight: bold;
-    font-size: 16px;
-    transition: color 0.3s ease;
-  }
-  
-  .navbar-list li a:hover {
-    color: #FFD700; 
-  }
-  
-  .content {
-    padding: 20px; 
-  }
-  
-
-/* map_view css */
-
+/* GENERAL RESET & BASE STYLING */
 html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    font-family: Arial, sans-serif;
-  }
-
-  /* Make the map fill all remaining space */
-  #map {
-    width: 100%;
-    height: 96%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-
-  /* The floating box */
-  .floating-box {
-    position: absolute;
-    top: 40px;
-    left: 47px;
-    z-index: 9999;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    max-width: 300px; 
-    font-family: arial, sans-serif;
-  }
-
-  /* Basic styling for form elements */
-  .floating-box h1 {
-    margin-top: 0;
-    font-family:  Georgia;
-  }
-  .floating-box label {
-    display: block;
-    margin: 0.5rem 0 0.25rem;
-  }
-  .floating-box input[type="text"] {
-    width: 100%;
-    margin-bottom: 0.5rem;
-    box-sizing: border-box;
-    padding: 0.5rem;
-  }
-  .floating-box button {
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
-  }
-
-  .legend {
-    position: absolute;
-    bottom: 20px; 
-    right: 10px;
-    z-index: 9999;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    font-family: arial, sans-serif;
-  }
-  
-  .legend h4 {
-    font-family:  Georgia;
-    margin: 0 0 5px;
-  }
-  
-  .legend-color {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-    vertical-align: middle;
-    border: 1px solid #000;
-  }
-
-  .about_text {
-    max-width: 800px; 
-    margin: 2rem auto;
-    padding: 0 1rem;  
-    line-height: 1.6;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #F5F5F5; 
+  font-family: 'Open Sans', sans-serif; 
+  color: #333; 
 }
+
+/* NAVBAR */
+.navbar {
+  background-color: #2C3E50; /* Dark navy */
+  color: #FFF;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-list li {
+  margin-right: 20px;
+}
+
+.navbar-list li a {
+  text-decoration: none;
+  color: #FFF;
+  font-weight: 600;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  font-family: 'Merriweather', serif; 
+}
+
+.navbar-list li a:hover {
+  color: #3498DB; 
+}
+
+/* CONTENT SECTION WRAPPER */
+.content {
+  padding: 20px;
+}
+
+/* MAP VIEW */
+#map {
+  width: 100%;
+  height: 96%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+/* FLOATING BOX */
+.floating-box {
+  position: absolute;
+  top: 43px;
+  left: 47px;
+  z-index: 9999;
+  background-color: #FFF; 
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  max-width: 300px;
+}
+
+.floating-box h1 {
+  margin-top: 0;
+  font-family: 'Merriweather', serif; 
+  color: #2C3E50; 
+}
+
+.floating-box label {
+  display: block;
+  margin: 0.5rem 0 0.25rem;
+  font-weight: 600;
+}
+
+.floating-box input[type="text"] {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.floating-box button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #3498DB;
+  color: #FFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.floating-box button:hover {
+  background-color: #2980B9; 
+}
+
+/* LEGEND */
+.legend {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  z-index: 9999;
+  background-color: #FFF;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.legend h4 {
+  font-family: 'Merriweather', serif;
+  margin: 0 0 5px;
+  color: #2C3E50;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  vertical-align: middle;
+  border: 1px solid #000;
+}
+
+/* ABOUT TEXT */
+.about_text {
+  max-width: 800px;
+  margin: 2rem auto;
+  margin-top: 0;
+  padding: 0 1rem;
+  line-height: 1.6;
+}
+
 .about_text h1 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-size: 2rem;
-    border-bottom: 2px solid #ccc; /* small visual separator */
-    padding-bottom: 0.2rem;
-}
-.about_text p {
-    margin: 1rem 0;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.2rem;
+  color: #2C3E50;
 }
 
-/* Table Styles */
+.about_text p {
+  margin: 1rem 0;
+  color: #555; 
+}
+
+#emergency_info{
+  font: bold;
+  font-size: 20px;
+  color: #000;
+}
+
+
+/* TABLE STYLES */
 #myGrid {
-    max-width: 600px;
-    margin: 1rem auto; /* center the table block */
+  max-width: 600px;
+  margin: 1rem auto; 
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0 auto; /* ensure it stays centered within #myGrid */
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* subtle drop shadow */
-}
-table thead {
-    background-color: #f2f2f2; /* light gray header */
-}
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px 12px;
-    text-align: left;
-}
-th {
-    font-weight: bold;
-}
-tr:nth-child(even) {
-    background-color: #fafafa; /* slight striping */
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  background-color: #FFF; /* White table background */
 }
 
-/* Headings above the table */
-.about_text h1 + h1 {
-    margin-top: 2rem;
+thead {
+  background-color: #f2f2f2;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  color: #2C3E50;
+  font-family: 'Merriweather', serif;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* TEMPORAL STYLING*/
+
+#temp_header{
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Center the chart container and give it some breathing room */
+#chartContainer {
+  width: 80%;
+  margin: 2rem auto; 
+  background-color: #FFF; 
+  padding: 1rem; 
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  border-radius: 6px; 
+  font-family: 'Open Sans', sans-serif; 
+}
+
+/* Make the chart responsive within the container */
+#myChart {
+  width: 100%;
+  height: 400px; 
+}
+
+/* Filter buttons section */
+.filter-buttons {
+  width: 80%;
+  margin: 1rem auto;
+  text-align: center;
+}
+
+/* Individual filter buttons */
+.filter-buttons button {
+  margin: 0.25rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: 'Merriweather', serif; 
+  font-weight: 600; 
+  background-color: #3498DB;
+  border: none;
+  border-radius: 4px;
+  color: #FFF;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for filter buttons */
+.filter-buttons button:hover {
+  background-color: #2980B9; 
 }
