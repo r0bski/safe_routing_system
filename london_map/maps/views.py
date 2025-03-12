@@ -52,7 +52,9 @@ def get_route(request):
          balanced_route_coords, 
          safe_len, 
          short_len,
-         balanced_len) = calc_route(start_coords, dest_coords)  
+         balanced_len,
+         safe_perctent,
+         balanced_percent) = calc_route(start_coords, dest_coords)  
 
         safe_route_json = json.dumps(safe_route_coords)
         shortest_route_json = json.dumps(shortest_route_coords)
@@ -65,7 +67,9 @@ def get_route(request):
             "balanced_route_json": balanced_route_json,
             "safe_len": safe_len,
             "short_len": short_len,
-            "balanced_len": balanced_len
+            "balanced_len": balanced_len,
+            "safe_perctent": safe_perctent,
+            "balanced_percent": balanced_percent
         })
 
     return render(request, "maps/map_view.html")

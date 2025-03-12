@@ -9,8 +9,8 @@ from rtree import index
 
 
 # Define paths and constants
-CRIME_PARQUET_PATH = "../compiled_data.parquet"
-GRAPHML_OUTPUT_PATH = "london_with_combined_data.graphml"
+CRIME_PARQUET_PATH = "./compiled_data.parquet"
+GRAPHML_OUTPUT_PATH = "london_map/london_with_combined_data.graphml"
 
 PLACE_NAME = "London, England, United Kingdom"
 SEARCH_RADIUS_KM = 0.1  # ~100 meters around the edge midpoint
@@ -162,8 +162,9 @@ def precompute_crime_weights(G, crime_df: pl.DataFrame, radius_km=0.1):
         cost = compute_edge_crime_cost(u, v, data, G, rtree_index, radius_km)
 
         base_dist_m = data.get("length", 0)
+        data["safty_score"] = cost
 
-        # Add the cost as a custom weight to te grapg
+        # Add the cost as a custom weight to the graph
         data["custom_weight"] = cost + 0.1 * base_dist_m
 
         # Also create a combined weight = crime-based cost + length
@@ -196,7 +197,7 @@ def main():
     else:
         print("Graph is already simplified, skipping simplify_graph.")
     """
-    G = ox.load_graphml("london_with_crime.graphml")
+    G = ox.load_graphml("london_map/london_with_crime.graphml")
 
     print("Precomputing edge weights")
     # Add crime score to each road and intersection

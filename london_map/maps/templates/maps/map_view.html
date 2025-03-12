@@ -25,9 +25,9 @@
     <h3>{{ message }}</h3>
   {% endif %}
   {% if safe_len and short_len and balanced_len%}
-  <p>Shortest route length: {{ short_len|floatformat:2 }} KM</p>
-  <p>Balanced route length: {{ balanced_len|floatformat:2 }} KM</p>
-  <p>Safest route length: {{ safe_len|floatformat:2 }} KM</p>
+  <p>Shortest route: {{ short_len|floatformat:2 }} KM</p>
+  <p>Balanced route: {{ balanced_len|floatformat:2 }} KM, {{ balanced_percent }}% safer</p>
+  <p>Safest route: {{ safe_len|floatformat:2 }} KM, {{ safe_perctent }}% safer</p>
   {% endif %}
 </div>
 

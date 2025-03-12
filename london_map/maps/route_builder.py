@@ -86,6 +86,8 @@ def calc_route(start_coords, end_coords):
             data["custom_weight"] = float(data["custom_weight"])
         if "combined_weight" in data:
             data["combined_weight"] = float(data["combined_weight"])
+        if "safty_score" in data:
+            data["safty_score"] = float(data["safty_score"])
 
     # Find the nearest node to start/end
     start_lat, start_lon = start_coords
@@ -108,6 +110,8 @@ def calc_route(start_coords, end_coords):
             route_coords.append([lat, lon])
         return route_coords
     
+    #TODO calculate how much safer a route is
+    
     # Get the lengths of all edges in each route
     lengths_safe = get_route_edge_attributes(G, safest_path_nodes, "length")
     lengths_short = get_route_edge_attributes(G, shortest_path_nodes, "length")
@@ -116,7 +120,20 @@ def calc_route(start_coords, end_coords):
     safe_len = sum(length for length in lengths_safe if length is not None)
     short_len = sum(length for length in lengths_short if length is not None)
     balanced_len= sum(length for length in lengths_balanced if length is not None)
-    # Convert to km and round to 2 dp
+
+    # Get saftey score of all the edges in each route
+    saftey_safe = get_route_edge_attributes(G, safest_path_nodes, "safty_score")
+    saftey_short = get_route_edge_attributes(G, shortest_path_nodes, "safty_score")
+    saftey_balanced = get_route_edge_attributes(G, balanced_path_nodes, "safty_score")
+    # Sum up the saftey score of each edge in the routes
+    safe_score = sum(score for score in saftey_safe if score is not None)
+    short_score = sum(score for score in saftey_short if score is not None)
+    balanced_score = sum(score for score in saftey_balanced if score is not None)
+
+    safe_percentage = round((1-(safe_score/short_score))*100)
+    balanced_percentage = round((1-(balanced_score/short_score))*100)
+
+    # Convert to km
     safe_len = safe_len/1000
     short_len = short_len/1000
     balanced_len = balanced_len/1000
@@ -127,7 +144,7 @@ def calc_route(start_coords, end_coords):
     balanced_route = convert_IDs_to_coords(balanced_path_nodes)
 
 
-    return safe_route, shortest_route, balanced_route, safe_len, short_len, balanced_len
+    return safe_route, shortest_route, balanced_route, safe_len, short_len, balanced_len, safe_percentage, balanced_percentage
 
 
 
