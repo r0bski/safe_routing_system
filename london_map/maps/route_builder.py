@@ -110,7 +110,6 @@ def calc_route(start_coords, end_coords):
             route_coords.append([lat, lon])
         return route_coords
     
-    #TODO calculate how much safer a route is
     
     # Get the lengths of all edges in each route
     lengths_safe = get_route_edge_attributes(G, safest_path_nodes, "length")
