@@ -24,8 +24,6 @@
   }).addTo(map);
 
   var heatPoints = JSON.parse('{{ heat_json|safe|escapejs }}');
-  // e.g. [[51.50, -0.12, 45], [51.49, -0.13, 10], ...]
-  //console.log(heatPoints)
 
   var heat = L.heatLayer(heatPoints, {
     radius: 10,
