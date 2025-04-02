@@ -21,6 +21,9 @@ def get_route(request):
         start = request.POST.get("start")
         destination = request.POST.get("destination")
 
+        start = start + ", London"
+        destination = destination + ", London"
+
         # Get exact address of locations
         geolocator = Nominatim(user_agent="my_django_app")
         start_location = geolocator.geocode(start)
