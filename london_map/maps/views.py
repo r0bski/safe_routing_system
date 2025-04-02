@@ -21,13 +21,11 @@ def get_route(request):
         start = request.POST.get("start")
         destination = request.POST.get("destination")
 
-        start = start + ", London"
-        destination = destination + ", London"
 
         # Get exact address of locations
         geolocator = Nominatim(user_agent="my_django_app")
-        start_location = geolocator.geocode(start)
-        destination_location = geolocator.geocode(destination)
+        start_location = geolocator.geocode(start + ", London")
+        destination_location = geolocator.geocode(destination + ", London")
 
         if not start_location or not destination_location:
             return render(request, "maps/map_view.html", {
