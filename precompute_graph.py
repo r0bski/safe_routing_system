@@ -211,3 +211,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+""" # Example: only footways, paths, pedestrian streets, steps, and living_streets
+# Exclude anything tagged as motorway, trunk, or primary roads
+custom_filter = (
+    '[\"area\"!~\"yes\"]'
+    '[\"highway\"~\"footway|path|pedestrian|steps|living_street\"]'
+    '[\"highway\"!~\"motor|motorway|trunk|primary|secondary\"]'
+)
+
+# Build the graph for London with the custom filter
+G = ox.graph_from_place(
+    "London, England",
+    custom_filter=custom_filter,
+    simplify=True
+)"""
